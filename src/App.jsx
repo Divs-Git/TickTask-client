@@ -6,9 +6,11 @@ import Users from './pages/Users';
 import Trash from './pages/Trash';
 import TaskDetails from './pages/TaskDetails';
 import { Toaster } from 'sonner';
+import { useSelector } from 'react-redux';
 
 function Layout() {
-  const user = '';
+  // const { user } = useSelector((state) => state.auth);
+  const user = true;
   const location = useLocation();
 
   return user ? (
