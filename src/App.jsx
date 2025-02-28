@@ -9,6 +9,7 @@ import { Toaster } from 'sonner';
 import { useSelector } from 'react-redux';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
+import MobileSidebar from './components/Mobile/MobileSidebar';
 
 function Layout() {
   // const { user } = useSelector((state) => state.auth);
@@ -21,7 +22,7 @@ function Layout() {
         <Sidebar />
       </div>
 
-      {/*<MobileSidebar />*/}
+      <MobileSidebar />
       <div className='flex-1 overflow-y-auto'>
         <Navbar />
         <div className='p-4 2xl:px-10'>
