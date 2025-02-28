@@ -1,39 +1,12 @@
-import {
-  MdAdminPanelSettings,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdKeyboardDoubleArrowUp,
-} from 'react-icons/md';
-import { FaNewspaper, FaUsers } from 'react-icons/fa';
+import { MdAdminPanelSettings } from 'react-icons/md';
+import { FaNewspaper } from 'react-icons/fa';
 import { GrInProgress } from 'react-icons/gr';
 import { FaArrowsToDot } from 'react-icons/fa6';
-import moment from 'moment';
-import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from '../utils';
 import { summary } from '../data/data';
-import clsx from 'clsx';
 import Chart from '../components/Chart';
-
-const Card = ({ icon, bg, label, count }) => {
-  return (
-    <div className='w-full h-32 bg-white p-5 shadow-md rounded-md flex items-center justify-between'>
-      {/* Card Record label */}
-      <div className='h-full flex flex-1 flex-col justify-between'>
-        <p className='text-base text-gray-600'>{label}</p>
-        <span className='text-2xl font-semibold'>{count}</span>
-        <span className='text-sm text-gray-400'>{'110 last month'}</span>
-      </div>
-
-      <div
-        className={clsx(
-          'w-10 h-10 rounded-full flex items-center justify-center text-white',
-          bg
-        )}
-      >
-        {icon}
-      </div>
-    </div>
-  );
-};
+import TaskTable from '../components/Dashboard/TaskTable';
+import UserTable from '../components/Dashboard/UserTable';
+import Card from '../components/Dashboard/Card';
 
 const Dashboard = () => {
   const totals = summary.tasks;
@@ -84,6 +57,16 @@ const Dashboard = () => {
         </h4>
 
         <Chart />
+      </div>
+
+      {/* Task List */}
+      <div className='w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8'>
+        {/*left */}
+
+        <TaskTable tasks={summary.last10Task} />
+
+        {/*right */}
+        <UserTable users={summary.users} />
       </div>
     </div>
   );
