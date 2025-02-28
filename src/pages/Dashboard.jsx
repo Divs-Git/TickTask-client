@@ -11,6 +11,7 @@ import moment from 'moment';
 import { BGS, PRIOTITYSTYELS, TASK_TYPE, getInitials } from '../utils';
 import { summary } from '../data/data';
 import clsx from 'clsx';
+import Chart from '../components/Chart';
 
 const Card = ({ icon, bg, label, count }) => {
   return (
@@ -69,10 +70,20 @@ const Dashboard = () => {
   ];
   return (
     <div className='h-full py-4'>
+      {/* Dashboard Header */}
       <div className='grid grid-cols-1 md:grid-cols-4 gap-5'>
         {stats.map(({ label, total, icon, bg }, index) => (
           <Card key={index} icon={icon} bg={bg} label={label} count={total} />
         ))}
+      </div>
+
+      {/* Chart*/}
+      <div className='bg-white w-full my-16 p-4 rounded shadow-sm'>
+        <h4 className='text-xl text-gray-600 font-semibold'>
+          Chart By Priority
+        </h4>
+
+        <Chart />
       </div>
     </div>
   );
