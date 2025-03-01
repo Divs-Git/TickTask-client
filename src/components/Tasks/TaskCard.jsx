@@ -9,7 +9,7 @@ import {
 import { useSelector } from 'react-redux';
 import {
   BGS,
-  PRIOTITYSTYELS,
+  PRIORITYSTYLES,
   TASK_TYPE,
   formatDate,
 } from '../../utils/index.js';
@@ -18,6 +18,7 @@ import { BiMessageAltDetail } from 'react-icons/bi';
 import { FaList } from 'react-icons/fa';
 import UserInfo from '../UserInfo.jsx';
 import { IoMdAdd } from 'react-icons/io';
+import AddSubTask from './Subtasks/AddSubTask.jsx';
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -36,7 +37,7 @@ const TaskCard = ({ task }) => {
           <div
             className={clsx(
               'flex flex-1 gap-1 items-center text-sm font-medium',
-              PRIOTITYSTYELS[task.priority]
+              PRIORITYSTYLES[task.priority]
             )}
           >
             <span className='text-lg'>{ICONS[task.priority]}</span>
@@ -117,7 +118,7 @@ const TaskCard = ({ task }) => {
         <div className='w-full pb-2'>
           <button
             onClick={() => setOpen(true)}
-            disabled={user && user.isAdmin ? false : true}
+            // disabled={user && user.isAdmin ? false : true}
             className='w-full flex gap-4 items-center text-sm text-gray-500 font-semibold disabled:cursor-not-allowed disabled::text-gray-300'
           >
             <IoMdAdd className='text-lg' />
@@ -126,7 +127,7 @@ const TaskCard = ({ task }) => {
         </div>
       </div>
 
-      {/*<AddSubTask open={open} setOpen={setOpen} id={task._id} />*/}
+      <AddSubTask open={open} setOpen={setOpen} id={task._id} />
     </Fragment>
   );
 };

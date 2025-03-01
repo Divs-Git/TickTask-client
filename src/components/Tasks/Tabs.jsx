@@ -5,7 +5,7 @@ function classNames(...classes) {
 }
 
 const Tabs = ({ tabs, setSelected, children }) => {
-  console.log('children', children);
+  // console.log('children', children);
   return (
     <div className='w-full px-1 sm:px-0'>
       <TabGroup>

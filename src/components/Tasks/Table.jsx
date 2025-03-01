@@ -9,9 +9,10 @@ import {
 import clsx from 'clsx';
 import { FaList } from 'react-icons/fa';
 import { toast } from 'sonner';
-import { BGS, formatDate, PRIOTITYSTYELS, TASK_TYPE } from '../../utils';
+import { BGS, formatDate, PRIORITYSTYLES, TASK_TYPE } from '../../utils';
 import UserInfo from '../UserInfo';
 import Button from '../Button';
+import ConfirmationDialog from '../Dialog';
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -20,7 +21,15 @@ const ICONS = {
 };
 
 const Table = ({ tasks }) => {
-  const deleteClicks = (id) => {};
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selected, setSelected] = useState(0);
+
+  const deleteClicks = (id) => {
+    setSelected(id);
+    setOpenDialog(true);
+  };
+
+  const deleteHandler = () => {};
 
   const TableHeader = () => (
     <thead className='w-full border-b border-gray-300'>
@@ -49,7 +58,7 @@ const Table = ({ tasks }) => {
 
       <td className='py-2'>
         <div className={'flex gap-1 items-center'}>
-          <span className={clsx('text-lg', PRIOTITYSTYELS[task.priority])}>
+          <span className={clsx('text-lg', PRIORITYSTYLES[task.priority])}>
             {ICONS[task.priority]}
           </span>
           <span className='capitalize line-clamp-1'>
@@ -128,6 +137,12 @@ const Table = ({ tasks }) => {
           </table>
         </div>
       </div>
+
+      <ConfirmationDialog
+        open={openDialog}
+        setOpen={setOpenDialog}
+        onClick={deleteHandler}
+      />
     </Fragment>
   );
 };

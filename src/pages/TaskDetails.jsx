@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 import { tasks } from '../data/data';
 import Tabs from '../components/Tasks/Tabs';
 import { ICONS, TABS } from '../data/Tasks';
-import { getInitials, PRIOTITYSTYELS, TASK_TYPE } from '../utils';
+import { getInitials, PRIORITYSTYLES, TASK_TYPE } from '../utils';
 import ActivityLog from '../components/Tasks/TaskDetails/ActivityLog';
 
 const TaskDetails = () => {
@@ -44,7 +44,7 @@ const TaskDetails = () => {
                   <div
                     className={clsx(
                       'flex flex-1 gap-1 items-center text-sm font-medium',
-                      PRIOTITYSTYELS[task.priority]
+                      PRIORITYSTYLES[task.priority]
                     )}
                   >
                     <span className='text-lg'>{ICONS[task.priority]}</span>

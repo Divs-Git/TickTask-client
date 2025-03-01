@@ -4,7 +4,7 @@ import {
   MdKeyboardArrowUp,
   MdKeyboardDoubleArrowUp,
 } from 'react-icons/md';
-import { BGS, PRIOTITYSTYELS, TASK_TYPE } from '../../utils';
+import { BGS, PRIORITYSTYLES, TASK_TYPE } from '../../utils';
 import UserInfo from '../UserInfo';
 import moment from 'moment';
 
@@ -40,7 +40,7 @@ const TaskTable = ({ tasks }) => {
 
       <td className='py-2'>
         <div className='flex gap-1 items-center'>
-          <span className={clsx('text-lg', PRIOTITYSTYELS[task.priority])}>
+          <span className={clsx('text-lg', PRIORITYSTYLES[task.priority])}>
             {ICONS[task.priority]}
           </span>
           <span className='capitalize'>{task.priority}</span>
