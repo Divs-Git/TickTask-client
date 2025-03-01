@@ -11,6 +11,7 @@ import TaskTitle from '../components/Tasks/TaskTitle';
 import BoardView from '../components/Tasks/BoardView';
 import { tasks } from '../data/data.js';
 import Table from '../components/Tasks/Table.jsx';
+import AddTask from '../components/Tasks/AddTask.jsx';
 
 const TABS = [
   { title: 'Board View', icon: <MdGridView /> },
@@ -43,9 +44,10 @@ const Tasks = () => {
 
         {!status && (
           <Button
+            onClick={() => setOpen(true)}
             label='Create Task'
             icon={<IoMdAdd className='text-lg' />}
-            className='flex flex-row-reverse gap-1 items-center bg-blue-600 text-white rounded-md py-2 2xl:py-2.5'
+            className='flex flex-row-reverse gap-1 items-center bg-purple-600 text-white rounded-md py-2 2xl:py-2.5'
           />
         )}
       </div>
@@ -69,6 +71,8 @@ const Tasks = () => {
           )}
         </Tabs>
       </div>
+
+      <AddTask open={open} setOpen={setOpen} />
     </div>
   );
 };
