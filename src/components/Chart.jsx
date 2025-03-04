@@ -9,12 +9,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { chartData } from '../data/data';
 
-const Chart = () => {
+const Chart = ({ data }) => {
   return (
     <ResponsiveContainer width={'100%'} height={500}>
-      <BarChart width={150} height={40} data={chartData}>
+      <BarChart width={150} height={40} data={data}>
         <XAxis dataKey={'name'} />
         <YAxis />
         <Tooltip />
