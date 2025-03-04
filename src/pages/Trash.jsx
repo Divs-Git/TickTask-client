@@ -12,6 +12,12 @@ import Button from '../components/Button';
 import { PRIORITYSTYLES, TASK_TYPE } from '../utils';
 import { tasks } from '../data/data';
 import ConfirmationDialog from '../components/Dialog';
+import {
+  useDeleteRestoreTaskMutation,
+  useGetAllTaskQuery,
+} from '../store/slices/api/taskApiSlice';
+import Loader from '../components/Loader';
+import { toast } from 'sonner';
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -25,6 +31,13 @@ const Trash = () => {
   const [msg, setMsg] = useState(null);
   const [type, setType] = useState('delete');
   const [selected, setSelected] = useState('');
+  const { data, isLoading, refetch } = useGetAllTaskQuery({
+    strQuery: '',
+    isTrashed: 'true',
+    search: '',
+  });
+
+  const [deleteRestoreTask] = useDeleteRestoreTaskMutation();
 
   const restoreAllClick = () => {
     setMsg('Are you sure you want to restore all tasks?');
@@ -51,7 +64,55 @@ const Trash = () => {
     setOpenDialog(true);
   };
 
-  const deleteRestoreHandler = () => {};
+  if (isLoading) {
+    return (
+      <div className='py-10'>
+        <Loader />
+      </div>
+    );
+  }
+
+  const deleteRestoreHandler = async () => {
+    try {
+      let result;
+
+      switch (type) {
+        case 'delete':
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: 'delete',
+          }).unwrap();
+          break;
+        case 'deleteAll':
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: 'deleteAll',
+          }).unwrap();
+          break;
+        case 'restore':
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: 'restore',
+          }).unwrap();
+          break;
+        case 'restoreAll':
+          result = await deleteRestoreTask({
+            id: selected,
+            actionType: 'delete',
+          }).unwrap();
+          break;
+      }
+
+      toast.success(result.message);
+      refetch();
+      setTimeout(() => {
+        setOpenDialog(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error.error);
+    }
+  };
 
   const TableHeader = () => (
     <thead className='border-b border-gray-300'>
@@ -130,7 +191,7 @@ const Trash = () => {
             <table className='w-full mb-5'>
               <TableHeader />
               <tbody>
-                {tasks.map((tk, id) => (
+                {data.tasks.map((tk, id) => (
                   <TableRow key={id} item={tk} />
                 ))}
               </tbody>

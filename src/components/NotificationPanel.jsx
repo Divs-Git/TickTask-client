@@ -53,16 +53,15 @@ const NotificationPanel = () => {
     },
   ];
 
-  console.log(selected);
   return (
     <div>
       <Popover className={'relative'}>
         <PopoverButton className='inline-flex items-center outline-none'>
           <div className='w-8 h-8 flex items-center justify-center text-gray-800 relative'>
             <IoIosNotificationsOutline className='text-2xl' />
-            {notificationData && notificationData.length > 0 && (
+            {data && data.length > 0 && (
               <span className='absolute text-center top-0 right-1 text-sm text-white font-semibold w-4 h-4 rounded-full bg-red-600'>
-                {notificationData && notificationData.length}
+                {data && data.length}
               </span>
             )}
           </div>
@@ -79,12 +78,12 @@ const NotificationPanel = () => {
         >
           <PopoverPanel className='absolute -right-16 md:-right-2 z-10 mt-5 flex w-screen max-w-max  px-4'>
             {({ close }) =>
-              notificationData &&
-              notificationData.length > 0 && (
+              data &&
+              data.length > 0 && (
                 <div className='w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'>
                   <div className='p-4'>
-                    {notificationData &&
-                      notificationData.slice(0, 5).map((item, index) => (
+                    {data &&
+                      data.slice(0, 5).map((item, index) => (
                         <div
                           key={item._id + index}
                           className='group relative flex gap-x-4 rounded-lg p-4 hover:bg-gray-50'

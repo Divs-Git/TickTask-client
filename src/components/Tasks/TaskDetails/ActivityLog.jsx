@@ -3,13 +3,33 @@ import { act_types } from '../../../data/Tasks';
 import Card from './Card';
 import Button from '../../Button';
 import Loader from '../../Loader';
+import { usePostTaskActivityMutation } from '../../../store/slices/api/taskApiSlice';
+import { toast } from 'sonner';
 
-const ActivityLog = ({ id, activity }) => {
+const ActivityLog = ({ id, activity, refetch }) => {
   const [selected, setSelected] = useState(act_types[0]);
   const [text, setText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [postActivity, { isLoading }] = usePostTaskActivityMutation();
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    const acitivityData = {
+      type: selected?.toLowerCase(),
+      activity: text,
+    };
+    try {
+      const result = await postActivity({
+        data: acitivityData,
+        id,
+      }).unwrap();
+
+      setText('');
+      toast.success(result.message);
+      refetch();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error.error);
+    }
+  };
 
   return (
     <div className='w-full flex gap-10 2xl:gap-20 min-h-screen px-10 py-8 bg-white shadow rounded-md justify-between overflow-y-auto'>

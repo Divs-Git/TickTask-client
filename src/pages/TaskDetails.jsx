@@ -19,15 +19,26 @@ import Tabs from '../components/Tasks/Tabs';
 import { ICONS, TABS } from '../data/Tasks';
 import { getInitials, PRIORITYSTYLES, TASK_TYPE } from '../utils';
 import ActivityLog from '../components/Tasks/TaskDetails/ActivityLog';
+import { useGetSingleTaskQuery } from '../store/slices/api/taskApiSlice';
+import Loader from '../components/Loader';
 
 const TaskDetails = () => {
   const { id } = useParams();
   const [selected, setSelected] = useState(0);
-  const task = tasks[3];
+  const { data, isLoading, refetch } = useGetSingleTaskQuery(id);
+  const task = data?.task;
   // console.log(
   //   'task',
   //   task.assets.map((el, index) => el)
   // );
+
+  if (isLoading) {
+    return (
+      <div className='py-10'>
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className='w-full flex flex-col mb-4 overflow-y-hidden'>
@@ -161,7 +172,11 @@ const TaskDetails = () => {
           </Fragment>
         ) : (
           <Fragment>
-            <ActivityLog activity={task.activities} id={id} />
+            <ActivityLog
+              activity={data.task.activities}
+              id={id}
+              refetch={refetch}
+            />
           </Fragment>
         )}
       </Tabs>

@@ -7,19 +7,33 @@ import UserList from './UserList';
 import SelectList from './SelectList';
 import Button from '../Button';
 import { BiImages } from 'react-icons/bi';
+import {
+  useCreateTaskMutation,
+  useGetAllTaskQuery,
+} from '../../store/slices/api/taskApiSlice';
+import { toast } from 'sonner';
+import { dateFormatter } from '../../utils';
 
 const LISTS = ['TODO', 'IN PROGRESS', 'COMPLETED'];
 const PRIORITY = ['HIGH', 'MEDIUM', 'NORMAL', 'LOW'];
 
-const AddTask = ({ open, setOpen }) => {
-  const task = '';
+const AddTask = ({ open, setOpen, task }) => {
+  const defaultValues = {
+    title: task?.title || '',
+    date: dateFormatter(task?.date || new Date()),
+    team: [],
+    stage: '',
+    priority: '',
+    assets: [],
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues });
 
-  const [team, setTeam] = useState(task.team || []);
+  const [team, setTeam] = useState(task?.team || []);
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
   const [priority, setPriority] = useState(
     task?.priority?.toUpperCase() || PRIORITY[2]
@@ -27,11 +41,37 @@ const AddTask = ({ open, setOpen }) => {
   const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
 
+  const [createTask, { isLoading }] = useCreateTaskMutation();
+  const [updateTask, { isLoading: isUpdating }] = useCreateTaskMutation();
+
   const handleSelect = (e) => {
     setAssets(e.target.files);
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async (data) => {
+    try {
+      const newData = {
+        ...data,
+        assets,
+        team,
+        stage,
+        priority,
+      };
+
+      const res = task?._id
+        ? await updateTask({ ...newData, _id: task._id }).unwrap()
+        : await createTask(newData).unwrap();
+
+      toast.success(res.message);
+
+      setTimeout(() => {
+        setOpen(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || error.error);
+    }
+  };
   return (
     <ModalWrapper open={open} setOpen={setOpen}>
       <form onSubmit={handleSubmit(submitHandler)}>

@@ -11,9 +11,10 @@ import {
 } from '@headlessui/react';
 import clsx from 'clsx';
 import { getInitials } from '../../utils';
+import { useGetTeamListQuery } from '../../store/slices/api/userApiSlice';
 
 const UserList = ({ team, setTeam }) => {
-  const data = summary.users;
+  const { data, isLoading } = useGetTeamListQuery();
   const [selectedUsers, setSelectedUsers] = useState([data[0]]);
 
   const handleChange = (e) => {
@@ -29,7 +30,7 @@ const UserList = ({ team, setTeam }) => {
     } else {
       setSelectedUsers(team);
     }
-  }, []);
+  }, [isLoading]);
 
   return (
     <div>

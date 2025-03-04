@@ -20,7 +20,7 @@ const Dashboard = () => {
       </div>
     );
   }
-  console.log(data);
+  // console.log(data);
 
   const totals = data?.tasks;
 
