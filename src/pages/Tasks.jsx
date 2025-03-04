@@ -12,6 +12,7 @@ import BoardView from '../components/Tasks/BoardView';
 import { tasks } from '../data/data.js';
 import Table from '../components/Tasks/Table.jsx';
 import AddTask from '../components/Tasks/AddTask.jsx';
+import { useGetAllTaskQuery } from '../store/slices/api/taskApiSlice.js';
 
 const TABS = [
   { title: 'Board View', icon: <MdGridView /> },
@@ -29,11 +30,16 @@ const Tasks = () => {
 
   const [selected, setSelected] = useState(0);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const status = params.status || '';
 
-  return loading ? (
+  const { data, isLoading } = useGetAllTaskQuery({
+    strQuery: status,
+    isTrashed: '',
+    search: '',
+  });
+
+  return isLoading ? (
     <div className='py-2'>
       <Loader />
     </div>
@@ -65,9 +71,9 @@ const Tasks = () => {
           )}
           {/** 0 -> Board View || 1 -> List View */}
           {selected === 0 ? (
-            <BoardView tasks={tasks} />
+            <BoardView tasks={data && data.tasks} />
           ) : (
-            <Table tasks={tasks} />
+            <Table tasks={data && data.tasks} />
           )}
         </Tabs>
       </div>
