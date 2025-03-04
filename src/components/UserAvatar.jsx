@@ -11,17 +11,32 @@ import { IoLogOutOutline } from 'react-icons/io5';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getInitials } from '../utils';
+import { toast } from 'sonner';
+import { useLogoutMutation } from '../store/slices/api/authApiSlice';
+import { logout } from '../store/slices/authSlice';
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
-  // const { user } = useSelector((state) => state.auth);
-  const user = { name: 'Divyansh Srivastava' };
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
+  // const user = { name: 'Divyansh Srivastava' };
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
-    console.log('logged out');
+  const [logoutUser] = useLogoutMutation();
+
+  const logoutHandler = async () => {
+    // console.log('logged out');
+    try {
+      await logoutUser().unwrap();
+      toast.success('Successfully logged out');
+      dispatch(logout());
+      navigate('/login');
+    } catch (error) {
+      console.log(error);
+      toast.error('Something went wrong');
+    }
   };
   return (
     <div>
@@ -76,7 +91,7 @@ const UserAvatar = () => {
               <MenuItem>
                 {() => (
                   <button
-                    onClick={() => setOpen(true)}
+                    onClick={logoutHandler}
                     className='text-red-600 group flex w-full items-center rounded-md px-2 py-2 text-base'
                   >
                     <IoLogOutOutline className='mr-2' aria-hidden='true' />

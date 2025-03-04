@@ -3,11 +3,16 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import TextBox from '../components/TextBox';
 import Button from '../components/Button';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../store/slices/api/authApiSlice';
+import { toast } from 'sonner';
+import { setCredentials } from '../store/slices/authSlice';
+import Loader from '../components/Loader';
 
 const Login = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   // console.log(user);
 
   const {
@@ -16,8 +21,20 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const [login, { isLoading }] = useLoginMutation();
+
   const submitHandler = async (data) => {
-    console.log('submit');
+    try {
+      const { user } = await login(data).unwrap();
+      // console.log(user);
+      // console.log(result);
+      dispatch(setCredentials(user));
+      toast.success('Successfully logged in');
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message || error.message);
+    }
   };
 
   useEffect(() => {
@@ -47,7 +64,7 @@ const Login = () => {
         {/* Form Section */}
         <div className='w-full md:w-1/3 p-6 flex flex-col justify-center items-center'>
           <form
-            onSubmit={submitHandler}
+            onSubmit={handleSubmit(submitHandler)}
             className='form-container w-full md:w-[400px] flex flex-col gap-y-8 bg-white shadow-lg rounded-xl px-12 pt-16 pb-16'
           >
             <div className=''>
@@ -87,11 +104,15 @@ const Login = () => {
                 Forgot Password?
               </span>
 
-              <Button
-                type='submit'
-                label='Login'
-                className='w-full h-12 bg-purple-700 hover:bg-purple-800 text-white rounded-lg transition-all'
-              />
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <Button
+                  type='submit'
+                  label='Login'
+                  className='w-full h-12 bg-purple-700 hover:bg-purple-800 text-white rounded-lg transition-all'
+                />
+              )}
             </div>
           </form>
         </div>
