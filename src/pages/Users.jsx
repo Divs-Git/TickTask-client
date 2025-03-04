@@ -1,18 +1,27 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Title from '../components/Title';
 import Button from '../components/Button';
 import { IoMdAdd } from 'react-icons/io';
 import { summary } from '../data/data';
 import clsx from 'clsx';
 import { getInitials } from '../utils';
-import ConfirmationDialog from '../components/Dialog';
+import ConfirmationDialog, { UserAction } from '../components/Dialog';
 import AddUser from '../components/User/AddUser';
+import {
+  useDeleteUserMutation,
+  useGetTeamListQuery,
+  useUserActionMutation,
+} from '../store/slices/api/userApiSlice';
+import { toast } from 'sonner';
 
 const Users = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [selected, setSelected] = useState(null);
+  const { data, error, isLoading, refetch } = useGetTeamListQuery();
+  const [deleteUser] = useDeleteUserMutation();
+  const [userAction] = useUserActionMutation();
 
   const editClick = (id) => {
     setOpen(true);
@@ -22,8 +31,43 @@ const Users = () => {
     setOpenDialog(true);
     setSelected(e);
   };
-  const userActionHandler = () => {};
-  const deleteHandler = () => {};
+  const userActionHandler = async () => {
+    try {
+      const result = await userAction({
+        isActive: !selected.isActive,
+        id: selected._id,
+      });
+      refetch();
+
+      toast.success(result.data.message);
+      setSelected(null);
+      setTimeout(() => {
+        setOpenAction(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message || error.message);
+    }
+  };
+  const deleteHandler = async () => {
+    try {
+      const result = await deleteUser(selected);
+      refetch();
+      toast.success('Deleted successfully');
+      setSelected(null);
+      setTimeout(() => {
+        setOpenDialog(false);
+      }, 500);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message || error.message);
+    }
+  };
+
+  const userStatusClick = (el) => {
+    setSelected(el);
+    setOpenAction(true);
+  };
 
   const TableHeader = () => (
     <thead className='border-b border-gray-300'>
@@ -56,7 +100,7 @@ const Users = () => {
 
       <td>
         <button
-          // onClick={() => userStatusClick(user)}
+          onClick={() => userStatusClick(user)}
           className={clsx(
             'w-fit px-4 py-1 rounded-full',
             user && user.isActive ? 'bg-blue-200' : 'bg-yellow-100'
@@ -102,9 +146,10 @@ const Users = () => {
             <table className='w-full mb-5'>
               <TableHeader />
               <tbody>
-                {summary.users.map((user, index) => (
-                  <TableRow key={index} user={user} />
-                ))}
+                {data &&
+                  data.map((user, index) => (
+                    <TableRow key={index} user={user} />
+                  ))}
               </tbody>
             </table>
           </div>
@@ -122,6 +167,12 @@ const Users = () => {
         open={openDialog}
         setOpen={setOpenDialog}
         onClick={deleteHandler}
+      />
+
+      <UserAction
+        open={openAction}
+        setOpen={setOpenAction}
+        onClick={userActionHandler}
       />
     </Fragment>
   );

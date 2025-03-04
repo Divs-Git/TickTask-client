@@ -1,18 +1,23 @@
 import { Fragment } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TextBox from './../TextBox';
 import { useForm } from 'react-hook-form';
 import ModalWrapper from './../ModalWrapper';
 import { DialogTitle } from '@headlessui/react';
 import Loader from './../Loader';
 import Button from '../Button';
+import { useRegisterMutation } from '../../store/slices/api/authApiSlice';
+import { toast } from 'sonner';
+import {
+  useGetTeamListQuery,
+  useUpdateUserMutation,
+} from '../../store/slices/api/userApiSlice';
+import { setCredentials } from '../../store/slices/authSlice';
 
 const AddUser = ({ open, setOpen, userData }) => {
   const { user } = useSelector((state) => state.auth);
-  let defaultValues = userData ?? {};
-
-  const isLoading = false,
-    isUpdating = false;
+  const dispatch = useDispatch();
+  let defaultValues = userData || {};
 
   const {
     register,
@@ -20,7 +25,37 @@ const AddUser = ({ open, setOpen, userData }) => {
     formState: { errors },
   } = useForm({ defaultValues });
 
-  const handleOnSubmit = () => {};
+  const [addNewUser, { isLoading }] = useRegisterMutation();
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+  const { refetch } = useGetTeamListQuery();
+
+  const handleOnSubmit = async (data) => {
+    try {
+      if (userData) {
+        const result = await updateUser(data).unwrap();
+
+        toast.success(result.message);
+
+        if (userData._id === user._id) {
+          dispatch(setCredentials({ ...result.user }));
+        }
+        refetch();
+      } else {
+        const result = await addNewUser({
+          ...data,
+          password: data.email,
+        }).unwrap();
+
+        toast.success('New user added successful');
+      }
+
+      setTimeout(() => {
+        setOpen(false);
+      }, 1500);
+    } catch (error) {
+      toast.error('Something went wrong');
+    }
+  };
   return (
     <Fragment>
       <ModalWrapper open={open} setOpen={setOpen}>

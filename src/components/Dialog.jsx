@@ -8,7 +8,7 @@ import { Fragment } from 'react';
 export default function ConfirmationDialog({
   open,
   setOpen,
-  msg = '',
+  msg = 'Are you sure want to delete selected record',
   setMsg = () => {},
   onClick = () => {},
   type = 'delete',
@@ -19,7 +19,6 @@ export default function ConfirmationDialog({
     setMsg(null);
     setOpen(false);
   };
-  console.log('msg', msg);
 
   return (
     <Fragment>
